@@ -13,30 +13,39 @@ const spriteWidth = 575;
 //spreedsheet height is 5230 and has 10 columns. 5230 / 10 = 523
 const spriteHeight = 523;
 
-let frameX = 0;
-let frameY = 0;
 let gameFrame = 0;
 const staggerFrames = 5;
+const spriteAnimations = [];
+const animationStates = [
+  {
+    name: 'idle',
+    frames: 7,
+  },
+  {
+    name: 'jump',
+    frames: 7,
+  }
+];
+animationStates.forEach((state, index) => {
+  let frames = {
+    loc: [],
+  }
+  for (let j = 0; j < state.frames; j++){
+    let positionX = j * spriteWidth;
+    let positionY = index * spriteHeight;
+    frames.loc.push({x: positionX, y: positionY});
+  }
+  spriteAnimations[state.name] = frames;
+});
+console.log(animationStates);
 
 function animate() {
   ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-  //ctx.fillRect(100,50,100,100);
-  /*
-  ctx.drawImage(image, source-x, source-y, 
-  source-width, source-height, destonation-x, 
-  destonation-y, destonation-width, destonation-height)
-  By changing source-x argument you can travel in spreedsheet horyzontaly. 
-  0 * spriteWidth, 1 * spriteWidth etc.
-  By changing source-y argument you can travel spreedsheet verticaly. 
-  0 * spriteHeight, 1 * spriteHeight etc. 
-  */
-  ctx.drawImage(playerImage, frameX * spriteWidth, frameY * spriteHeight, 
-    spriteWidth, spriteHeight, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-  
-  if(gameFrame % staggerFrames == 0) { //slowdown the animation 5 times. This block will run every 5 frames
-    if (frameX < 6) frameX++;
-    else frameX = 0;
-  }
+  let position = Math.floor(gameFrame/staggerFrames) % spriteAnimations['jump'].loc.length;
+  let frameX = spriteWidth * position;
+  let frameY = spriteAnimations['jump'].loc[position].y;
+  ctx.drawImage(playerImage, frameX, frameY, spriteWidth, spriteHeight, 
+    0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
   gameFrame++;
   requestAnimationFrame(animate);
