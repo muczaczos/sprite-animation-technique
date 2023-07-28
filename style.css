@@ -13,6 +13,7 @@
   z-index: 10;
   top: 50px;
   left: 50%;
+  /* center horyzontally */
   transform: translateX(-50%);
 }
 
